@@ -1,0 +1,152 @@
+@Metadata.layer: #CORE
+////////////////////////////////////////////////////////////////////////////////////////////
+@UI.headerInfo: {
+  typeName: 'Travel Details(Object Page)',      //Adds Header line to object page
+  typeNamePlural: 'Travels( ListReport )',
+  //imageUrl: 'AgencyID',
+  title: {
+    value: 'Description',                       //Adds Title to object page
+    type: #STANDARD
+  },
+  description: {
+    value: 'TravelID',                   //Adds description to object page
+    type: #STANDARD
+  }
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+@UI.presentationVariant: [{
+        sortOrder: [{                                       //For sorting against a column
+            by: 'LastChangedAt',
+            direction: #DESC
+        }],
+        visualizations: [{
+            type: #AS_LINEITEM
+         }]
+}]
+annotate view ZC_FE_TRAVEL_000136 with
+{
+
+  @UI.facet: [
+  ////////////////////////////////////////////////////////////////////////////////////////////
+    {
+        id: 'TravelHeaderPrice',               //Data Points created in Header of of object page
+        purpose:  #HEADER,
+        type:     #DATAPOINT_REFERENCE,
+        targetQualifier: 'PriceData',
+        position: 10
+    },
+
+    {
+        id: 'TravelHeaderOverallStatus',
+        purpose: #HEADER,
+        type: #DATAPOINT_REFERENCE,
+        targetQualifier: 'StatusData',
+        position: 20
+    },
+  ////////////////////////////////////////////////////////////////////////////////////////////
+    {
+        label: 'General Information',          //Creates a New Section with Title 'General Information'
+        purpose: #STANDARD,                    //Has been made a parent Facet(type" #collection) that serves as a container for other Facets.
+        id: 'GeneralInfo',                     //Child facets reference the parent facet by 'parentId'
+        type: #COLLECTION,
+        position: 10
+    },
+
+
+    {
+        id: 'Travel1',                         //Reference to elements annotated with UI.identification.
+        label: 'General',                      //The facet will display the referenced elements in a list format.
+        purpose: #STANDARD,                    //ParentId Needed for child facets to be nested into #COLLECTION facets.
+        type: #IDENTIFICATION_REFERENCE,
+        parentId: 'GeneralInfo',
+        targetQualifier: 'General',
+        position: 10
+    },
+
+
+    {
+      id: 'Prices',
+      purpose: #STANDARD,
+      type: #FIELDGROUP_REFERENCE,
+      parentId: 'GeneralInfo',
+      label: 'Prices',
+      position: 20,
+      targetQualifier: 'PricesGroup'
+    },
+
+
+    {
+        id: 'Dates',
+        purpose: #STANDARD,
+        type: #FIELDGROUP_REFERENCE,
+        parentId: 'GeneralInfo',
+        label: 'Dates',
+        position: 30,
+        targetQualifier: 'DatesGroup'
+    },
+  ////////////////////////////////////////////////////////////////////////////////////////////
+    {
+      id: 'Booking',                   //Creates another section which is a table( list report )
+      purpose: #STANDARD,              //Elemet level annotation needs to be done in the corresponding MDE of target element
+      type: #LINEITEM_REFERENCE,
+      label: 'Bookings',
+      position: 20,
+      targetElement: '_Booking'
+    }
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  ]
+  @UI.lineItem: [{position: 10 }]
+  @UI.textArrangement: #TEXT_LAST
+  TravelID;
+
+
+  @UI.identification: [{ position: 10,qualifier: 'General' }]
+  Description;
+
+  @UI.lineItem: [{position: 20,label: 'Agency' }]
+  @UI.identification: [{ position: 20, qualifier: 'General' }]
+  @UI.selectionField: [{position: 10 }]
+  AgencyID;
+
+  @UI.lineItem: [{position: 30, label: 'Customer' }]
+  @UI.identification: [{ position: 30, qualifier: 'General' }]
+  @UI.selectionField: [{position: 20 }]
+  @UI.textArrangement: #TEXT_FIRST
+  CustomerID;
+
+
+
+
+
+  @UI.lineItem: [{position: 60 }]
+  @UI.dataPoint: { qualifier: 'PriceData', title: 'Total Price'}
+  @UI.fieldGroup: [{ qualifier: 'PricesGroup', position: 20 }]
+  TotalPrice;
+
+  @UI.lineItem: [{position: 70, criticality: 'OverallStatusCriticality' }]
+  @UI.dataPoint: { qualifier: 'StatusData', title: 'Status', criticality: 'OverallStatusCriticality' }
+  @UI.selectionField: [{position: 30 }]
+  @UI.textArrangement: #TEXT_ONLY
+  OverallStatus;
+
+
+
+
+
+  @UI.lineItem: [{position: 80 }]
+  LocalLastChangedAt;
+
+
+  @UI.lineItem: [{position: 40 }]
+  @UI.fieldGroup: [{ qualifier: 'DatesGroup', position: 10 }]
+  BeginDate;
+
+  @UI.fieldGroup: [{ qualifier: 'DatesGroup', position: 10 }]
+  EndDate;
+
+  @UI.lineItem: [{position: 50 }]
+  @UI.fieldGroup: [ { qualifier: 'PricesGroup', position: 10} ]
+  BookingFee;
+
+
+}
